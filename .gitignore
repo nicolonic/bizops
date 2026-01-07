@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+**/.DS_Store
+
+# Env / secrets
+.env
+**/.env
+**/.env.*
+
+# OAuth / service account keys
+autotouch/ads/client_secret*.json
+autotouch/configs/*.json
+
+# Local auth URL scratch files
+autotouch/ads/*oauth*_url.txt
+autotouch/ads/gcloud_*_url.txt
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/

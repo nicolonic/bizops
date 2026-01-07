@@ -1,0 +1,60 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Arial;}}
+\fs24
+\b Google Ads API Tool Design Document (Internal)\b0\par
+\par
+\b Company:\b0 Autotouch AI\par
+\b Website:\b0 https://autotouch.ai/\par
+\b Owner / API Contact Email:\b0 (use a role email like google-ads-api@autotouch.ai)\par
+\b Manager (MCC) Account ID:\b0 (your MCC ID)\par
+\par
+\b 1) Purpose / Use Case\b0\par
+We use the Google Ads API to support internal marketing operations for Autotouch AI.\par
+Primary use cases:\par
+\tab - Keyword research (discover keyword ideas, get approximate bid/competition signals).\par
+\tab - Reporting and optimization (pull performance metrics and search terms for our own campaigns).\par
+\par
+This tool is \b not\b0 a public product and is not offered to external customers or third parties.\par
+\par
+\b 2) Users and Access Model\b0\par
+Only internal employees (and approved contractors acting on our behalf) can access the tool.\par
+Access is limited to authenticated internal users; no anonymous/public access is provided.\par
+\par
+\b 3) Accounts and Data Scope\b0\par
+We will only access Google Ads accounts that Autotouch AI owns or has explicit permission to manage.\par
+If access is through a manager account, API calls include the manager customer ID in the login-customer-id header.\par
+\par
+\b 4) API Operations and Data Handling\b0\par
+\b 4.1 Keyword planning\b0\par
+\tab - Generate keyword ideas using KeywordPlanIdeaService for a specified geo/language.\par
+\tab - Store generated keyword lists and aggregate metrics (e.g., competition and bid ranges) for campaign planning.\par
+\par
+\b 4.2 Reporting\b0\par
+\tab - Pull read-only reporting data (impressions, clicks, cost, conversions, search terms) to evaluate performance.\par
+\tab - Reports are used internally to adjust budgets, targeting, and creative.\par
+\par
+\b 5) Authentication and Credential Security\b0\par
+The tool authenticates via OAuth 2.0 using a Google account with access to the Ads account(s).\par
+We follow the principle of least privilege and limit access to authorized users only.\par
+Credentials and tokens are stored securely and are not embedded in client-side code.\par
+\par
+\b 6) Data Storage and Retention\b0\par
+\tab - Keyword research outputs and performance reports may be stored for analysis.\par
+\tab - We do not sell, rent, or share API data with third parties.\par
+\tab - Data retention is limited to what is necessary for ongoing marketing analysis.\par
+\par
+\b 7) Quotas, Rate Limiting, and Reliability\b0\par
+We implement request throttling and retry logic with backoff to respect API limits.\par
+We monitor errors and usage to avoid excessive load and to ensure system stability.\par
+\par
+\b 8) Compliance\b0\par
+We will comply with Google Ads API policies, including:\par
+\tab - Using the API only for authorized accounts.\par
+\tab - Keeping our API contact email current.\par
+\tab - Implementing reasonable security controls for credentials and data.\par
+\tab - Providing accurate disclosures about internal-only use.\par
+\par
+\b 9) Support and Maintenance\b0\par
+We maintain internal logs for troubleshooting and track API changes (version upgrades).\par
+If requested, we can provide additional details, diagrams, or walkthroughs of our implementation.\par
+}
