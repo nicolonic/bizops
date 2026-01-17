@@ -65,10 +65,16 @@ def main():
             print(f"Starting local OAuth server on http://localhost:{port}/", file=sys.stderr)
             creds = flow.run_local_server(port=port, open_browser=False)
 
+    dimensions_raw = os.environ.get("GSC_DIMENSIONS", "query,page")
+    dimensions = [d.strip() for d in dimensions_raw.split(",") if d.strip()]
+    if not dimensions:
+        print("GSC_DIMENSIONS is empty. Provide at least one dimension.", file=sys.stderr)
+        sys.exit(1)
+
     request = {
         "startDate": start_date,
         "endDate": end_date,
-        "dimensions": ["query", "page"],
+        "dimensions": dimensions,
         "rowLimit": 25000,
     }
 
@@ -101,18 +107,19 @@ def main():
 
     response = json.loads(payload)
     for row in response.get("rows", []):
-        query, page = row.get("keys", ["", ""])
-        rows.append({
-            "query": query,
-            "page": page,
+        keys = row.get("keys", [])
+        entry = {dim: (keys[i] if i < len(keys) else "") for i, dim in enumerate(dimensions)}
+        entry.update({
             "clicks": row.get("clicks", 0),
             "impressions": row.get("impressions", 0),
             "ctr": row.get("ctr", 0),
             "position": row.get("position", 0),
         })
+        rows.append(entry)
 
     with open(out_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["query", "page", "clicks", "impressions", "ctr", "position"])
+        fieldnames = [*dimensions, "clicks", "impressions", "ctr", "position"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
 

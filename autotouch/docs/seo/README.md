@@ -5,6 +5,10 @@ This directory documents how to review SEO performance (Search Console) and how 
 Artifacts and weekly reports live in `seo/`. Start there if you want the LLM kickoff flow:
 - `seo/README.md`
 
+## Reporting cadence
+- Weekly (every Friday or Monday): run the weekly report for the prior 7 days.
+- Monthly (first week of the month): review index coverage, Core Web Vitals, and crawl stats.
+
 ## Search Console (GSC)
 
 ### Quick facts
@@ -50,6 +54,7 @@ GSC_SITE_URL="sc-domain:autotouch.ai" \
 GSC_START_DATE="2026-01-09" \
 GSC_END_DATE="2026-01-15" \
 GSC_SERVICE_ACCOUNT_FILE="configs/autotouchai-05f671345e58.json" \
+GSC_DIMENSIONS="query,page" \
 GSC_OUT="/tmp/gsc_current.csv" \
 python3 ads/gsc_export.py
 ```
@@ -64,8 +69,26 @@ GSC_SITE_URL="sc-domain:autotouch.ai" \
 GSC_START_DATE="2026-01-02" \
 GSC_END_DATE="2026-01-08" \
 GSC_SERVICE_ACCOUNT_FILE="configs/autotouchai-05f671345e58.json" \
+GSC_DIMENSIONS="query,page" \
 GSC_OUT="/tmp/gsc_previous.csv" \
 python3 ads/gsc_export.py
+```
+
+### Weekly exports (recommended dimensions)
+Run these in addition to `query,page` so we can roll up by page, query, device, and country.
+Use the same `SSL_CERT_FILE`, `GSC_SITE_URL`, `GSC_START_DATE`, `GSC_END_DATE`, and `GSC_SERVICE_ACCOUNT_FILE` values as above.
+```bash
+# Pages only
+GSC_DIMENSIONS="page" GSC_OUT="/tmp/gsc_pages.csv" python3 ads/gsc_export.py
+
+# Queries only
+GSC_DIMENSIONS="query" GSC_OUT="/tmp/gsc_queries.csv" python3 ads/gsc_export.py
+
+# Device
+GSC_DIMENSIONS="device" GSC_OUT="/tmp/gsc_device.csv" python3 ads/gsc_export.py
+
+# Country
+GSC_DIMENSIONS="country" GSC_OUT="/tmp/gsc_country.csv" python3 ads/gsc_export.py
 ```
 
 ### Where to store snapshots
