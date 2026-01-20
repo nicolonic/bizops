@@ -8,7 +8,7 @@ This folder consolidates cross-project docs for the Autotouch repo. Subprojects 
 - `docs/seo/` — Search Console review workflow + SERPER usage.
 - `docs/website/` — Main website runbook and content/trackers.
 - `docs/referral_site/` — Referral/comparison microsite overview.
-- `docs/gtm/` — GTM setup + tracking alignment.
+- `docs/outbound/` — GTM setup + tracking alignment.
 
 ## Where the actual code lives
 - Ads scripts: `ads/`
