@@ -1,0 +1,129 @@
+# LLM Research Prompt: Autotouch Positioning + Conversion Messaging (Extremely Detailed)
+
+## Role
+You are a **website conversion specialist and positioning strategist** tasked with improving paid‑traffic conversion for Autotouch. You should think like a CRO lead who also understands outbound GTM tooling and how SMB teams buy.
+
+## Goal
+You are assisting a founder/operator in updating Autotouch’s website messaging to improve paid‑traffic conversion. We need a research‑backed positioning recommendation and concrete homepage copy direction. The work must explicitly address a real market context: many companies are reading about tools like Clay, Instantly, Smartlead, Outreach, etc., and they *don’t know where to start*. They have a mental model of “best‑in‑practice outbound,” but lack the time, resources, or desire to assemble and maintain a Frankenstein stack.
+
+This update is urgent because current paid traffic is clicking but not converting at a strong rate, so we need a clearer message and a higher‑converting homepage experience now.
+
+Deliver a response that:
+1) proposes the most compelling positioning angles for Autotouch,
+2) maps those angles to specific website hero/subheader directions,
+3) explains *why* these choices should work for cold paid traffic,
+4) provides a competitive framing vs Clay and Outreach (and optionally adjacent tools like Instantly/Smartlead),
+5) includes a conversion-focused homepage structure.
+
+## Required Inputs (Context)
+Autotouch’s founder story (from a recent LinkedIn post) should shape the narrative:
+- A “best‑in‑practice outbound program” stack typically looks like:
+  - Clay for account research and personalization
+  - Clay/FullEnrich for contact enrichment (phone/email waterfalls)
+  - Outreach for sequencing
+  - Nooks for dialing
+  - Instantly/Smartlead for deliverability
+- Many companies *like the idea* of assembling this stack, but:
+  - They don’t have time or resources
+  - They don’t want reps jumping between multiple tools
+- Autotouch was built to combine the best of each into one workflow:
+  - AI account research (Clay‑like)
+  - Waterfall enrichment (FullEnrich‑like)
+  - Sequencing + task management (Outreach‑like)
+  - Dialing with local presence (Nooks‑like)
+- Autotouch recently came out of stealth with several customers.
+
+**Critical nuance you must include:**
+Many SMB and mid‑market teams are *researching tools like Clay, Instantly, Smartlead, Outreach* but don’t know where to start. They need guidance, not more complexity. Our positioning must empathize with “information overload + stack anxiety.”
+
+## Current paid‑ads performance context (why we’re doing this now)
+Use this performance snapshot to ground your recommendations and urgency:
+- Campaign type: Google Search, single campaign
+- Time window: roughly Jan 7–20, 2026
+- Impressions: ~2,266
+- Clicks: 44
+- CTR: ~1.94%
+- Avg CPC: ~$7.92
+- Spend: ~$348
+- Google Ads conversions (primary action = `form_submit`): 1
+- GA4 shows higher `form_submit` events than Ads/CRM, suggesting client‑side event inflation and/or weak conversion experience.
+
+Interpretation:
+- Targeting + messaging are not wildly off (CTR/CPC look normal), but conversion is low.
+- The right move is to **improve the conversion layer** (homepage + CTA + clarity) while continuing to run the campaign for more signal.
+
+## Research Requirements
+Use current (January 2026) positioning from the market:
+- Clay: data enrichment, AI research agents, workflow automation
+- Outreach: enterprise sales engagement + AI agents + workflow orchestration
+- Instantly/Smartlead: deliverability, inbox infra, cold email scale
+You do not need to browse, but the response should reflect plausible current market language and signal-awareness. If you do browse, summarize rather than quote.
+
+## Output Requirements (Structure)
+Your response must be extremely detailed. Include:
+
+### 1) Market framing and user psychology
+- Describe how SMB teams *think* about outbound tooling today.
+- Explain why they feel stuck (“I want the Clay + Outreach stack, but I can’t build it”).
+- Explicitly mention that they read about these tools but don’t know where to start.
+- Describe decision-making friction: too many tools, unclear ROI, no internal ops.
+
+### 2) Competitive map
+- Provide a short profile of each: Clay vs Outreach vs Instantly/Smartlead.
+- Highlight their strengths but *also* why they are insufficient for SMBs who want end‑to‑end execution.
+- Identify the “gap in the market” Autotouch fills: integrated research→enrichment→sequencing→calling in one system.
+
+### 3) Positioning hypotheses (3–4 options)
+For each option, provide:
+- Positioning statement
+- Who it’s for
+- Why it’s credible (tie back to the integrated stack story)
+- Why it converts cold traffic
+
+Examples of positionings to explore (you can refine):
+- “All‑in‑one outbound execution for SMB teams”
+- “The outbound stack, already assembled”
+- “Outreach‑grade sequencing without enterprise overhead”
+- “Research → enrich → sequence → call in one workflow”
+
+### 4) Homepage hero copy recommendations
+For at least 3 options, provide:
+- Headline
+- Subheader
+- Primary CTA
+- Secondary CTA
+- A one‑sentence “belief shift” explaining why this headline will resonate with paid traffic
+
+### 5) Homepage structure (conversion‑first)
+Propose a recommended structure and explain *why* each block exists:
+- Hero (ICP clarity + outcome)
+- Proof or trust strip
+- “Stack replacement” section
+- Short “how it works” section
+- Low‑friction CTA / quick demo
+- FAQ to handle objections
+
+### 6) Specific objection handling
+List likely objections and how to address them in copy:
+- “Is this just another Clay?”
+- “Do I have to replace Outreach?”
+- “Will this hurt deliverability?”
+- “Is this too complex for a small team?”
+
+### 7) Short test plan
+A minimal plan for how to validate new positioning:
+- A/B test 2 hero variants
+- Measure demo starts + form_submit conversion from paid traffic
+- Recommend threshold sample size (e.g., 60–100 clicks)
+
+## Tone & Style
+- Extremely detailed and structured, like a high‑quality strategy memo.
+- Clear and persuasive, but not hypey.
+- Focus on conversion and clarity.
+
+## Output Format
+Return a structured document with headings and bullet points. Provide final text that could be copied into a working doc.
+
+---
+
+If you need any additional context, list exactly what you need at the end.

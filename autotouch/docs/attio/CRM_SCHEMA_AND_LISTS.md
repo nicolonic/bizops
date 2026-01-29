@@ -30,6 +30,12 @@ System fields:
 - `phone_numbers` (phone-number, multiselect)
 - `primary_location` (location)
 - `description` (text)
+- `newsletter` (select): True, False
+- `status` (select): new, prospecting, in pipeline, nurturing, disqualified, customer
+
+Status usage:
+- Default to `prospecting` for people without an active deal.
+- If a deal is created for the person, set `status` to `in pipeline`.
 
 Attribution fields (current):
 - `acquisition_direction` (select): Inbound, Outbound

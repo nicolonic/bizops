@@ -111,7 +111,7 @@ Focus on stable, public facts. Keep `source_detail` vendor-agnostic unless expli
   - `acquisition_direction`: Outbound
   - `acquisition_channel`: Email
   - `source_detail`: Outbound email sequencing
-  - `campaign`: segment or batch name
+  - `campaign`: segment or batch name (use the tool/vendor + time window, e.g. "Instantly - Jan 2026")
 - If lead came from a demo request form:
   - `acquisition_direction`: Inbound
   - `acquisition_channel`: Content
@@ -121,6 +121,68 @@ Focus on stable, public facts. Keep `source_detail` vendor-agnostic unless expli
   - `acquisition_direction`: Inbound or Outbound (depends on who initiated)
   - `acquisition_channel`: Social
   - `source_detail`: LinkedIn
+  - `campaign`: your LinkedIn batch name (if any)
+  - `last_outbound_date` (people): set to the date you sent the first LinkedIn message (if outbound)
+
+## LinkedIn leads → Attio (recommended fields)
+When a LinkedIn prospect is **approved** for CRM entry, prefer this order:
+1) Enrich the profile (person + company).
+2) Try to find a verified email (for dedupe).
+3) Create/update the company (query by domain).
+4) Create/update the person (query by email), link to company.
+5) Create a follow-up task linked to the person record.
+
+### Email-first (recommended for LinkedIn)
+For LinkedIn leads, an email is the most reliable dedupe key for Attio people.
+
+If RapidAPI doesn’t return an email, use Findymail:
+- Findymail is credit-based; only run it once a lead is explicitly approved for CRM entry.
+- API key lives in `/Users/nicolo/Projects/bizops/.env` as `FINDYMAIL_API_KEY`.
+- Endpoint: `POST https://app.findymail.com/api/search/business-profile`
+
+```bash
+set -a; source /Users/nicolo/Projects/bizops/.env; set +a
+
+curl -s https://app.findymail.com/api/search/business-profile \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --header "Authorization: Bearer $FINDYMAIL_API_KEY" \
+  --data '{"linkedin_url":"https://linkedin.com/in/<public_id_or_full_url>","webhook_url":null}'
+```
+
+If no email is found, you can still create the person record with name + LinkedIn URL, but plan to update it later.
+
+### Companies (what to fill)
+Recommended company fields:
+- `name`
+- `domains` (primary dedupe key)
+- `description` (what they do + who they sell to)
+- `employee_range` (if known)
+- `primary_location` (if known)
+- `linkedin` (company page URL, if known)
+- Attribution: `acquisition_direction`, `acquisition_channel`, `source_detail`, `campaign`
+
+### People (what to fill)
+Recommended person fields:
+- `name`
+- `email_addresses` (if found)
+- `job_title`
+- `company` (record-reference → companies)
+- `primary_location` (if known)
+- `phone_numbers` (only if you have an actual number)
+- `description` (include the LinkedIn URL + a short conversation note + demo link sent)
+- Attribution: `acquisition_direction`, `acquisition_channel`, `source_detail`, `campaign`, `last_outbound_date`
+
+### Follow-up tasks (recommended)
+Create a task when:
+- They indicate interest (“Sure, send info”, “send the link”, etc.)
+- They’re not the decision-maker and you need an intro
+- You sent a link and want a follow-up if no reply
+
+Task content examples:
+- “Sent founder demo link; follow up in 2 business days if no reply.”
+- “Ask for intro to owner of outbound/sales engagement tooling.”
+Set `deadline_at` to next business day or +2 days and link the task to the person record.
 
 ## Notes
 - Prefer linking the person to a company record.

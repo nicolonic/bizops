@@ -1,134 +1,68 @@
-# Attio (Worksuite) quick guide
+# Attio (Worksuite) setup
 
-This project uses the Attio REST API. The API key is stored in `clients/worksuite/.env` as `ATTIO_API_KEY`.
+This doc is Worksuite-specific. For general Addio/Attio API patterns, see `../../docs/attio.md`.
 
-## 1) Load the API key
+## API key
+The API key is stored in `clients/worksuite/.env` as `ATTIO_API_KEY`.
 ```bash
 set -a; source clients/worksuite/.env; set +a
 ```
 
-## 2) List objects
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  https://api.attio.com/v2/objects | jq -r '.data[] | [.api_slug,.singular_noun,.plural_noun,.created_at] | @tsv'
-```
+## Workspace objects (as of 2026-01-21)
+`companies`, `deals`, `people`, `customer_requests`.
 
-Common objects in this workspace (as of 2026-01-09): `people`, `companies`, `deals`.
+## Deals: required + key fields
+Required fields (per API):
+- `name` (Deal name)
+- `owner` (Deal owner, actor/workspace member id)
+- `stage` (Deal stage)
 
-## 3) List attributes for an object
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  "https://api.attio.com/v2/objects/companies/attributes" | jq -r '.data[] | [.api_slug,.title,.type] | @tsv' | sort
-```
+Commonly used fields:
+- `deal_type` (Type)
+- `value` (Deal value)
+- `opportunity_arr` (Opportunity ARR)
+- `expected_close_date` (Expected close date)
+- `associated_company` (Associated company)
+- `associated_people` (Associated people)
 
-## 4) Create a field (attribute)
-### Select field (single select)
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -X POST "https://api.attio.com/v2/objects/companies/attributes" \
-  -d '{
-    "data": {
-      "title": "Account Health",
-      "description": "",
-      "api_slug": "account_health",
-      "type": "select",
-      "is_multiselect": false,
-      "is_required": false,
-      "is_unique": false,
-      "config": {}
-    }
-  }'
-```
+## Companies: key fields used in renewals
+- `name` (Company name)
+- `record_id` (Company Record ID)
+- `term_start_date`, `term_end_date`
+- `total_arr_5` (Total ARR)
 
-### Currency field
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -X POST "https://api.attio.com/v2/objects/deals/attributes" \
-  -d '{
-    "data": {
-      "title": "Opportunity ARR",
-      "description": "",
-      "api_slug": "opportunity_arr",
-      "type": "currency",
-      "is_multiselect": false,
-      "is_required": false,
-      "is_unique": false,
-      "config": {
-        "currency": {"default_currency_code": "USD", "display_type": "symbol"}
-      }
-    }
-  }'
-```
+## Record references in this workspace
+- `deals.associated_company` → `companies`
+- `deals.associated_people` → `people`
+- `companies.associated_deals` → `deals`
+- `companies.team` → `people`
+- `companies.customer_requests` → `customer_requests`
 
-## 5) Add options to a select field
-1) Find the attribute ID:
+## Owner lookup (workspace members)
 ```bash
 curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
   -H "Content-Type: application/json" \
-  "https://api.attio.com/v2/objects/companies/attributes" | jq -r '.data[] | select(.api_slug=="account_health") | .id.attribute_id'
+  "https://api.attio.com/v2/workspace_members" | jq -r '.data[] | [.first_name,.last_name,.email_address,.id.workspace_member_id] | @tsv'
 ```
-2) Add options:
-```bash
-ATTR_ID="<attribute_id>"
-for opt in "Healthy" "At-risk"; do
-  curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-    -H "Content-Type: application/json" \
-    -X POST "https://api.attio.com/v2/objects/companies/attributes/$ATTR_ID/options" \
-    -d "{\"data\":{\"title\":\"$opt\"}}"
-done
-```
+Example (Worksuite): Diana Upson → `087574ee-a863-4688-886a-6862b2932dab`.
 
-## 6) Write values to records
-### Create a company record
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -X POST "https://api.attio.com/v2/objects/companies/records" \
-  -d '{
-    "data": {
-      "values": {
-        "name": "Acme Co",
-        "domains": ["acme.com"],
-        "account_health": "Healthy",
-        "account_priority": "Tier 1"
-      }
-    }
-  }'
-```
+## Renewal import recipe (Jan 2026 workflow)
+Source file: `data/Companies - Customers (1).csv`
 
-### Update a deal with currency value
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -X PUT "https://api.attio.com/v2/objects/deals/records/<record_id>" \
-  -d '{
-    "data": {
-      "values": {
-        "opportunity_arr": {"value": 120000, "currency": "USD"}
-      }
-    }
-  }'
-```
+Filter:
+- `Term End Date` within the next 91 days (relative to run date).
 
-## 7) Useful quick checks
-- **Required fields**:
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  "https://api.attio.com/v2/objects/deals/attributes" | jq -r '.data[] | select(.is_required==true) | .api_slug'
-```
-- **Unique fields**:
-```bash
-curl -s -H "Authorization: Bearer $ATTIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  "https://api.attio.com/v2/objects/companies/attributes" | jq -r '.data[] | select(.is_unique==true) | .api_slug'
-```
+Deal field mapping:
+- Deal name: `"<Company> - Renewal"` (no date)
+- Deal value: `Total ARR`
+- Type: `Renewal`
+- Stage: `0 - Renewal Initiated`
+- Expected close date: `Term End Date`
+- Associated company: `Record ID`
+- Deal owner: workspace_member_id (e.g., Diana Upson)
+
+Latest output file: `data/renewals_next_91_days.csv`.
 
 ## Notes
-- Keep `.env` out of version control.
-- For list-specific fields, use list entry endpoints instead of object records.
-- When adding a new select option, you must create the option first or the value will be rejected.
+- Use company Record ID to link deals to accounts.
+- If importing new deals, you can’t supply Attio Record IDs; use a unique external ID if you need dedupe.

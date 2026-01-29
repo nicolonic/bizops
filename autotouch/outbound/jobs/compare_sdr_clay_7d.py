@@ -18,88 +18,17 @@ sys.path.insert(0, str(ROOT))
 
 from shared.integrations.rapidapi.jobs.client import RapidApiLinkedInJobsClient
 from shared.integrations.rapidapi.jobs.active_jobs_db import RapidApiActiveJobsDbClient
-from autotouch.shared.job_titles import SDR_TITLES, to_or_query
+from outbound.shared.job_titles import SDR_TITLES, to_or_query
+from outbound.jobs.job_fetch import (
+    dedupe_jobs,
+    extract_jobs,
+    job_key,
+    summarize_job,
+)
 
 TITLE_FILTER = to_or_query(SDR_TITLES)
 DESC_FILTER = "Clay"
 LIMIT = 50
-
-
-def extract_jobs(resp):
-    data = resp.get("data") or {}
-    if isinstance(data, list):
-        return data
-    for key in ("data", "jobs", "results"):
-        if isinstance(data.get(key), list):
-            return data[key]
-    return []
-
-
-ID_KEYS = (
-    "id",
-    "job_id",
-    "jobId",
-    "job_post_id",
-    "job_posting_id",
-    "posting_id",
-    "urn",
-)
-
-
-def job_key(job):
-    for key in ID_KEYS:
-        job_id = job.get(key)
-        if job_id:
-            return f"id:{str(job_id).strip().lower()}"
-    title = (job.get("job_title") or job.get("title") or "").strip().lower()
-    company = (
-        job.get("employer_name")
-        or job.get("company_name")
-        or job.get("organization")
-        or ""
-    ).strip().lower()
-    location = (
-        job.get("job_city") or job.get("location") or job.get("job_location") or ""
-    ).strip().lower()
-    url = (
-        job.get("job_apply_link")
-        or job.get("job_apply_url")
-        or job.get("job_url")
-        or job.get("job_link")
-        or ""
-    ).strip().lower()
-    return url or f"{title}|{company}|{location}"
-
-
-def dedupe_jobs(jobs):
-    unique = {}
-    duplicates = []
-    for job in jobs:
-        key = job_key(job)
-        if key in unique:
-            duplicates.append(job)
-        else:
-            unique[key] = job
-    return list(unique.values()), duplicates
-
-
-def summarize(job):
-    return {
-        "title": job.get("job_title") or job.get("title"),
-        "company": job.get("employer_name")
-        or job.get("company_name")
-        or job.get("organization"),
-        "location": job.get("job_city")
-        or job.get("location")
-        or job.get("job_location"),
-        "url": job.get("job_apply_link")
-        or job.get("job_apply_url")
-        or job.get("job_url")
-        or job.get("job_link"),
-        "posted_at": job.get("job_posted_at_datetime_utc")
-        or job.get("posted_at")
-        or job.get("date_posted"),
-    }
 
 
 def main() -> int:
@@ -155,11 +84,11 @@ def main() -> int:
 
     print("\nSample LinkedIn Job Search API results:")
     for j in linkedin_unique[:5]:
-        print(summarize(j))
+        print(summarize_job(j))
 
     print("\nSample Active Jobs DB results:")
     for j in active_unique[:5]:
-        print(summarize(j))
+        print(summarize_job(j))
 
     return 0
 
